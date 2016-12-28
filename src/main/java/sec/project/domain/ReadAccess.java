@@ -7,7 +7,7 @@ import java.io.Serializable;
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "book_id", "user_id" })})
 public class ReadAccess implements Serializable {
 
-    private int id;
+    private long id;
     private Book book;
     private User user;
 
@@ -23,11 +23,11 @@ public class ReadAccess implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

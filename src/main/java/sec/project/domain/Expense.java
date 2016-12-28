@@ -7,15 +7,16 @@ import javax.persistence.*;
 @Entity
 public class Expense {
 
-    private int id;
+    private long id;
+    private boolean isCurrent;
     private int year;
     private int month;
     private Book book;
     private Category lowestSubCategory;
     private long amountCents;
     private User user;
-    private Integer previousVersionId;
-    private Integer nextVersionId;
+    private Long previousVersionId;
+    private Long nextVersionId;
     private long timeAdded;
 
     public Expense() {
@@ -24,6 +25,7 @@ public class Expense {
 
     public Expense(int year, int month, Book book, Category lowestSubCategory, long amountCents, User user) {
         this();
+        this.isCurrent = true;
         this.year = year;
         this.month = month;
         this.book = book;
@@ -35,11 +37,11 @@ public class Expense {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -67,19 +69,19 @@ public class Expense {
         this.amountCents = amountCents;
     }
 
-    public Integer getPreviousVersionId() {
+    public Long getPreviousVersionId() {
         return previousVersionId;
     }
 
-    public void setPreviousVersionId(Integer previousVersionId) {
+    public void setPreviousVersionId(Long previousVersionId) {
         this.previousVersionId = previousVersionId;
     }
 
-    public Integer getNextVersionId() {
+    public Long getNextVersionId() {
         return nextVersionId;
     }
 
-    public void setNextVersionId(Integer nextVersionId) {
+    public void setNextVersionId(Long nextVersionId) {
         this.nextVersionId = nextVersionId;
     }
 
@@ -119,5 +121,13 @@ public class Expense {
 
     public void setLowestSubCategory(Category lowestSubCategory) {
         this.lowestSubCategory = lowestSubCategory;
+    }
+
+    public boolean isCurrent() {
+        return isCurrent;
+    }
+
+    public void setCurrent(boolean current) {
+        isCurrent = current;
     }
 }

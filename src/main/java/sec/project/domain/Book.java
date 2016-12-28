@@ -9,7 +9,7 @@ import java.util.Set;
 @Entity
 public class Book {
 
-    private int id;
+    private long id;
     private String name;
     private Set<ReadAccess> readAccessSet;
     private Set<WriteAccess> writeAccessSet;
@@ -27,11 +27,11 @@ public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

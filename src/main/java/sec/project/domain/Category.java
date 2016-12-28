@@ -9,15 +9,15 @@ import java.util.Set;
 @Entity
 public class Category {
 
-    private int id;
-    private Integer parentCategoryId;
+    private long id;
+    private Long parentCategoryId;
     private String name;
 
     public Category() {
         super();
     }
 
-    public Category(Integer parentCategoryId, String name) {
+    public Category(Long parentCategoryId, String name) {
         this();
         this.parentCategoryId = parentCategoryId;
         this.name = name;
@@ -25,20 +25,20 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
     @Column(nullable = true)
-    public Integer getParentCategoryId() {
+    public Long getParentCategoryId() {
         return parentCategoryId;
     }
 
-    public void setParentCategoryId(Integer parentCategoryId) {
+    public void setParentCategoryId(Long parentCategoryId) {
         this.parentCategoryId = parentCategoryId;
     }
 

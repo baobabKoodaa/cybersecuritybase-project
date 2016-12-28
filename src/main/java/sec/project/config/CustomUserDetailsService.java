@@ -102,6 +102,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         user = userRepository.findOneByLoginname(user.getLoginname());
         System.out.println("ACCESS TO " + user.getWriteAccessSet().size());
 
+        System.out.println("BOOK ID: " + book.getId());
     }
 
     @Transactional
@@ -113,8 +114,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         Expense e = new Expense(2016, 12, book, category, 1238, user);
         expenseRepository.save(e);
 
-        user = userRepository.findOneByLoginname(user.getLoginname());
-        System.out.println("EXPENSE COUNT " + expenseRepository.findByUser(user).size());
+        System.out.println("EXPENSE COUNT " + expenseRepository.findByBook(book).size());
     }
 
     @Override

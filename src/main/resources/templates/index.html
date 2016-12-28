@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title>Sign up form</title>
+    </head>
+    <body>
+
+        <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+        <form th:action="@{/logout}" method="post">
+            <input type="submit" value="Sign Out"/>
+        </form>
+
+        <form action="#" th:action="@{/postExpense}" method="POST">
+            <p><label for="year">Year</label>: <input type="text" name="year" id="year"/></p>
+            <p><label for="month">Month</label>: <input type="text" name="month" id="month"/></p>
+            <p><label for="bookId">BookId</label>: <input type="text" name="bookId" id="bookId"/></p>
+            <p><label for="lowestSubCategoryId">Category</label>: <input type="text" name="lowestSubCategoryId" id="lowestSubCategoryId" hidden="true" value="1"/></p>
+            <p><label for="amountCents">AmountCents</label>: <input type="text" name="amountCents" id="amountCents"/></p>
+            <p><label for="previousVersion">Previous Version</label>: <input type="text" name="previousVersion" id="previousVersion" hidden="true"/></p>
+            <p><input type="submit" value="Submit" /></p>
+        </form>
+
+        <h1>Selected book: </h1>
+
+        <p></p>
+    </body>
+</html>

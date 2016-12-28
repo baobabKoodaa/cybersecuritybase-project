@@ -12,7 +12,7 @@ public class ViewController {
 
     @GetMapping("/")
     public String defaultMapping() {
-        return "form";
+        return "index";
     }
 
     @GetMapping("/login")
