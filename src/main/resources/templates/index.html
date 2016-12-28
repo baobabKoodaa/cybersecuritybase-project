@@ -21,11 +21,15 @@
             <p><input type="submit" value="Submit" /></p>
         </form>
 
-        <h1>Selected book: </h1>
+        <h1>Selected book: <span th:text="${bookName}"></span></h1>
 
         <ul>
             <li th:each="item : ${expenses}">
                 <span th:text="${item.amountCents}">expense</span> (<span th:text="${item.amountCents}">999</span>€)
+                <form th:action="@{/deleteExpense}" th:method="DELETE">
+                    <input type="text" name="id" id="id" th:value="${item.id}" hidden="false"/>
+                    <input type="submit" value="Delete"/>
+                </form>
             </li>
         </ul>
 

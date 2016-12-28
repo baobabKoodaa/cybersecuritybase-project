@@ -31,12 +31,9 @@ public class RESTController {
     @RequestMapping("/")
     public String defaultMapping(Model model, Principal auth) {
         User user = userRepository.findOneByLoginname(auth.getName());
-        System.out.println("Who's GETting main page? " + user.getLoginname());
         Book latest = user.getLatestRead();
-        System.out.println("IS LATEST NULL ? " + (latest == null));
-        //model.addAttribute("bookName", latest.getName());
-        System.out.println("BAH SIZE " + expenseRepository.findByBook(latest).size());
-        model.addAttribute("expenses", expenseRepository.findByBook(latest));
+        model.addAttribute("bookName", latest.getName());
+        model.addAttribute("expenses", expenseRepository.findFirst10ByBookAndCurrentOrderByTimeAddedDesc(latest, true));
         return "index";
     }
 
@@ -68,7 +65,7 @@ public class RESTController {
             expenseRepository.save(previous);
         }
         expenseRepository.save(current);
-        return "forward:/";
+        return "redirect:/";
     }
 
     @DeleteMapping(value = "/deleteExpense")
@@ -80,7 +77,7 @@ public class RESTController {
         Expense expense = expenseRepository.findOne(id);
         expense.setCurrent(false);
         expenseRepository.save(expense);
-        return "forward:/";
+        return "redirect:/";
     }
 
 }

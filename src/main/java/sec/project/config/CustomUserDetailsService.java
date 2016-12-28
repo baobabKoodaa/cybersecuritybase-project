@@ -39,15 +39,35 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findOneByLoginname(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("No such user: " + username);
+        }
+        return new org.springframework.security.core.userdetails.User(
+                user.getLoginname(),
+                user.getEncodedPassword(),
+                true,
+                true,
+                true,
+                true,
+                Arrays.asList(new SimpleGrantedAuthority(user.getRole())));
+    }
+
+    private String encode(String plaintextPassword) {
+        return BCrypt.hashpw(plaintextPassword, BCrypt.gensalt());
+    }
+
     @PostConstruct
     public void init() {
-        /** Hard coded credentials for convenience. Not intended as a flag-to-be-found. */
-        User atte = new User("atte", encode("123"));
+        /** Populate database for testing convenience. */
+        User atte = new User("atte", encode("1"));
         User mikko = new User("mikko", encode("masa"));
         userRepository.save(atte);
         userRepository.save(mikko);
 
-        Book bookA = new Book("A");
+        Book bookA = new Book("Aten tilikirja");
         bookRepository.save(bookA);
         testR(atte, bookA);
         test2(atte, bookA);
@@ -55,9 +75,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         atte = userRepository.findOneByLoginname(atte.getLoginname());
         atte.setLatestRead(bookA);
         userRepository.save(atte);
-        System.out.println("LOGIN NAME " + atte.getLoginname());
-        atte = userRepository.findOneByLoginname("atte");
-        System.out.println("DAFUCK ?????? " + atte.getLatestRead().getName());
     }
 
     private void testR(User user, Book book) {
@@ -124,23 +141,5 @@ public class CustomUserDetailsService implements UserDetailsService {
         System.out.println("EXPENSE COUNT " + expenseRepository.findByBook(book).size());
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findOneByLoginname(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("No such user: " + username);
-        }
-        return new org.springframework.security.core.userdetails.User(
-                user.getLoginname(),
-                user.getEncodedPassword(),
-                true,
-                true,
-                true,
-                true,
-                Arrays.asList(new SimpleGrantedAuthority(user.getRole())));
-    }
 
-    private String encode(String plaintextPassword) {
-        return BCrypt.hashpw(plaintextPassword, BCrypt.gensalt());
-    }
 }

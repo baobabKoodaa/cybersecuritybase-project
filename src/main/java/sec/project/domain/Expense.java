@@ -8,7 +8,7 @@ import javax.persistence.*;
 public class Expense {
 
     private long id;
-    private boolean isCurrent;
+    private boolean current;
     private int year;
     private int month;
     private Book book;
@@ -25,7 +25,7 @@ public class Expense {
 
     public Expense(int year, int month, Book book, Category lowestSubCategory, long amountCents, User user) {
         this();
-        this.isCurrent = true;
+        this.current = true;
         this.year = year;
         this.month = month;
         this.book = book;
@@ -124,10 +124,10 @@ public class Expense {
     }
 
     public boolean isCurrent() {
-        return isCurrent;
+        return current;
     }
 
     public void setCurrent(boolean current) {
-        isCurrent = current;
+        this.current = current;
     }
 }
