@@ -2,11 +2,9 @@ package sec.project.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import sec.project.domain.Book;
-import sec.project.domain.Category;
-import sec.project.domain.Expense;
-import sec.project.domain.User;
+import sec.project.domain.*;
 import sec.project.repository.BookRepository;
 import sec.project.repository.CategoryRepository;
 import sec.project.repository.ExpenseRepository;
@@ -29,6 +27,18 @@ public class RESTController {
 
     @Autowired
     ExpenseRepository expenseRepository;
+
+    @RequestMapping("/")
+    public String defaultMapping(Model model, Principal auth) {
+        User user = userRepository.findOneByLoginname(auth.getName());
+        System.out.println("Who's GETting main page? " + user.getLoginname());
+        Book latest = user.getLatestRead();
+        System.out.println("IS LATEST NULL ? " + (latest == null));
+        //model.addAttribute("bookName", latest.getName());
+        System.out.println("BAH SIZE " + expenseRepository.findByBook(latest).size());
+        model.addAttribute("expenses", expenseRepository.findByBook(latest));
+        return "index";
+    }
 
     /** Adding or modifying an expense. */
     @Transactional
@@ -58,7 +68,7 @@ public class RESTController {
             expenseRepository.save(previous);
         }
         expenseRepository.save(current);
-        return "index";
+        return "forward:/";
     }
 
     @DeleteMapping(value = "/deleteExpense")
@@ -70,7 +80,7 @@ public class RESTController {
         Expense expense = expenseRepository.findOne(id);
         expense.setCurrent(false);
         expenseRepository.save(expense);
-        return "index";
+        return "forward:/";
     }
 
 }

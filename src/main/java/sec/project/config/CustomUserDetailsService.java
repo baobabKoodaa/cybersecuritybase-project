@@ -42,8 +42,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     @PostConstruct
     public void init() {
         /** Hard coded credentials for convenience. Not intended as a flag-to-be-found. */
-        User atte = new User("mikko", encode("masa"));
-        User mikko = new User("atte", encode("123"));
+        User atte = new User("atte", encode("123"));
+        User mikko = new User("mikko", encode("masa"));
         userRepository.save(atte);
         userRepository.save(mikko);
 
@@ -51,20 +51,27 @@ public class CustomUserDetailsService implements UserDetailsService {
         bookRepository.save(bookA);
         testR(atte, bookA);
         test2(atte, bookA);
+
+        atte = userRepository.findOneByLoginname(atte.getLoginname());
+        atte.setLatestRead(bookA);
+        userRepository.save(atte);
+        System.out.println("LOGIN NAME " + atte.getLoginname());
+        atte = userRepository.findOneByLoginname("atte");
+        System.out.println("DAFUCK ?????? " + atte.getLatestRead().getName());
     }
 
     private void testR(User user, Book book) {
         ReadAccess r = new ReadAccess(book, user);
         readAccessRepository.save(r);
         user = userRepository.findOneByLoginname(user.getLoginname());
-        System.out.println("ACCESS TO " + user.getReadAccessSet().size());
+        System.out.println("User + " + user.getLoginname() + " HAS ACCESS TO " + user.getReadAccessSet().size());
         for (ReadAccess bah : user.getReadAccessSet()) {
             r = bah;
         }
         readAccessRepository.delete(r);
         System.out.println("SIZE " + readAccessRepository.findAll().size());
         user = userRepository.findOneByLoginname(user.getLoginname());
-        System.out.println("ACCESS TO " + user.getReadAccessSet().size());
+        System.out.println("User + " + user.getLoginname() + " HAS ACCESS TO " + user.getReadAccessSet().size());
 
         System.out.println(" ----------------- BOOK BELOW ----------------------");
 

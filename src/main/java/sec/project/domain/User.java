@@ -14,6 +14,7 @@ public class User {
     private String encodedPassword;
     private String role;
     private Set<ReadAccess> readAccessSet;
+    private Book latestRead;
     private Set<WriteAccess> writeAccessSet;
 
     public User() {
@@ -84,4 +85,13 @@ public class User {
         this.writeAccessSet = writeAccessSet;
     }
 
+    @ManyToOne
+    @JoinColumn(name = "book_id")
+    public Book getLatestRead() {
+        return this.latestRead;
+    }
+
+    public void setLatestRead(Book latestRead) {
+        this.latestRead = latestRead;
+    }
 }
