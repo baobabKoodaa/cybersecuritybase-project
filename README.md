@@ -1,4 +1,5 @@
 # cybersecuritybase-project
-The first course project for F-SecurityMOOC.
+This is a vulnerable web application coded as a course project for [F-Secure's Cybersecurity MOOC](https://cybersecuritybase.github.io/project/)
 
-This is a vulnerable web application. Do not run it on a machine connected to the internet!
+**Do not run this** on a machine connected to the internet!
+
