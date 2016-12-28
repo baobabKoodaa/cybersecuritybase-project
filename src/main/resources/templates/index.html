@@ -14,14 +14,14 @@
         <form action="#" th:action="@{/postExpense}" method="POST">
             <p><label for="year">Year</label>: <input type="text" name="year" id="year"/></p>
             <p><label for="month">Month</label>: <input type="text" name="month" id="month"/></p>
-            <p><label for="bookId">BookId</label>: <input type="text" name="bookId" id="bookId"/></p>
             <p><label for="lowestSubCategoryId">Category</label>: <input type="text" name="lowestSubCategoryId" id="lowestSubCategoryId" hidden="true" value="1"/></p>
             <p><label for="amountCents">AmountCents</label>: <input type="text" name="amountCents" id="amountCents"/></p>
-            <p><label for="previousVersion">Previous Version</label>: <input type="text" name="previousVersion" id="previousVersion" hidden="true"/></p>
+            <input type="text" name="bookId" id="bookId" hidden="true" th:value="${book.id}"/>
+            <input type="text" name="previousVersion" id="previousVersion" hidden="true"/>
             <p><input type="submit" value="Submit" /></p>
         </form>
 
-        <h1>Selected book: <span th:text="${bookName}"></span></h1>
+        <h1>Selected book: <span th:text="${book.name}"></span></h1>
 
         <ul>
             <li th:each="item : ${expenses}">

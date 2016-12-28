@@ -4,11 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import sec.project.config.CustomUserDetailsService;
 import sec.project.domain.*;
-import sec.project.repository.BookRepository;
-import sec.project.repository.CategoryRepository;
-import sec.project.repository.ExpenseRepository;
-import sec.project.repository.UserRepository;
+import sec.project.repository.*;
 
 import javax.transaction.Transactional;
 import java.security.Principal;
@@ -28,11 +26,32 @@ public class RESTController {
     @Autowired
     ExpenseRepository expenseRepository;
 
+    @Autowired
+    WriteAccessRepository writeAccessRepository;
+
+    @Autowired
+    CustomUserDetailsService manager;
+
     @RequestMapping("/")
     public String defaultMapping(Model model, Principal auth) {
         User user = userRepository.findOneByLoginname(auth.getName());
         Book latest = user.getLatestRead();
-        model.addAttribute("bookName", latest.getName());
+        if (latest == null) {
+            /** Assign any book as latest. */
+            for (WriteAccess w : user.getWriteAccessSet()) {
+                latest = w.getBook();
+                user.setLatestRead(latest);
+                userRepository.save(user);
+                break;
+            }
+        }
+        if (latest == null) {
+            /** If user has deleted all their books. */
+            latest = manager.setUpNewBook("New book", user);
+            user.setLatestRead(latest);
+            userRepository.save(user);
+        }
+        model.addAttribute("book", latest);
         model.addAttribute("expenses", expenseRepository.findFirst10ByBookAndCurrentOrderByTimeAddedDesc(latest, true));
         return "index";
     }
@@ -52,13 +71,16 @@ public class RESTController {
         Book book = bookRepository.findOne(bookId);
         Category lowestSubCategory = categoryRepository.findOne(lowestSubCategoryId);
         User user = userRepository.findOneByLoginname(auth.getName());
+        WriteAccess writeAccess = writeAccessRepository.findOneByBookAndUser(book, user);
+        if (writeAccess == null) {
+            return "redirect:/";
+        }
 
         Expense current = new Expense(year, month, book, lowestSubCategory, amountCents, user);
         if (!previousVersion.isEmpty()) {
             /** If modifying, maintain a version history of changes. */
             Long prevId = Long.parseLong(previousVersion);
-            current.setPreviousVersionId(prevId);
-            Expense previous = expenseRepository.findOne((long)prevId);
+            Expense previous = expenseRepository.findOne(prevId);
             previous.setCurrent(false);
             previous.setNextVersionId(current.getId());
             current.setPreviousVersionId(prevId);
@@ -75,8 +97,11 @@ public class RESTController {
     ) {
         User user = userRepository.findOneByLoginname(auth.getName());
         Expense expense = expenseRepository.findOne(id);
-        expense.setCurrent(false);
-        expenseRepository.save(expense);
+        WriteAccess writeAccess = writeAccessRepository.findOneByBookAndUser(expense.getBook(), user);
+        if (writeAccess != null) {
+            expense.setCurrent(false);
+            expenseRepository.save(expense);
+        }
         return "redirect:/";
     }
 

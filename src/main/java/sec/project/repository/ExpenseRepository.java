@@ -14,7 +14,7 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     /** Returns latest 10 current expenses from given Book. */
     List<Expense> findFirst10ByBookAndCurrentOrderByTimeAddedDesc(Book book, Boolean current);
 
-    /** Returns all expenses from a book, including non current
+    /** Returns all expenses from given book, including non current
      * expenses (deleted or old versions of modified expenses). */
     List<Expense> findByBook(Book book);
 }

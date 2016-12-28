@@ -11,6 +11,7 @@ public class Book {
 
     private long id;
     private String name;
+    private User owner;
     private Set<ReadAccess> readAccessSet;
     private Set<WriteAccess> writeAccessSet;
 
@@ -20,9 +21,10 @@ public class Book {
         this.writeAccessSet = new HashSet<>();
     }
 
-    public Book(String name) {
+    public Book(String name, User owner) {
         this();
         this.name = name;
+        this.owner = owner;
     }
 
     @Id
@@ -60,5 +62,14 @@ public class Book {
 
     public void setWriteAccessSet(Set<WriteAccess> writeAccessSet) {
         this.writeAccessSet = writeAccessSet;
+    }
+
+    @OneToOne
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 }
