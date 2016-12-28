@@ -16,10 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import sec.project.domain.*;
-import sec.project.repository.BookRepository;
-import sec.project.repository.ReadAccessRepository;
-import sec.project.repository.UserRepository;
-import sec.project.repository.WriteAccessRepository;
+import sec.project.repository.*;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -36,6 +33,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private WriteAccessRepository writeAccessRepository;
 
+    @Autowired
+    private ExpenseRepository expenseRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
     @PostConstruct
     public void init() {
         /** Hard coded credentials for convenience. Not intended as a flag-to-be-found. */
@@ -47,11 +50,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         Book bookA = new Book("A");
         bookRepository.save(bookA);
         testR(atte, bookA);
-        //test(atte, bookA);
-        //test2(atte, bookA);
+        test2(atte, bookA);
     }
 
-    //@Transactional
     private void testR(User user, Book book) {
         ReadAccess r = new ReadAccess(book, user);
         readAccessRepository.save(r);
@@ -100,6 +101,20 @@ public class CustomUserDetailsService implements UserDetailsService {
         writeAccessRepository.delete(w);
         user = userRepository.findOneByLoginname(user.getLoginname());
         System.out.println("ACCESS TO " + user.getWriteAccessSet().size());
+
+    }
+
+    @Transactional
+    public void test2(User user, Book book) {
+        System.out.println(" ----------------- EXPENSE TEST ----------------------");
+
+        Category category = new Category();
+        categoryRepository.save(category);
+        Expense e = new Expense(2016, 12, book, category, 1238, user);
+        expenseRepository.save(e);
+
+        user = userRepository.findOneByLoginname(user.getLoginname());
+        System.out.println("EXPENSE COUNT " + expenseRepository.findByUser(user).size());
     }
 
     @Override
