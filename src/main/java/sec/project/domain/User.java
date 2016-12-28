@@ -13,11 +13,13 @@ public class User {
     private String loginname;
     private String encodedPassword;
     private String role;
-
-    private Set<BookUser> bookUsers;
+    private Set<ReadAccess> readAccessSet;
+    private Set<WriteAccess> writeAccessSet;
 
     public User() {
         super();
+        this.readAccessSet = new HashSet<>();
+        this.writeAccessSet = new HashSet<>();
     }
 
     public User(String loginname, String encodedPassword) {
@@ -25,7 +27,6 @@ public class User {
         this.loginname = loginname;
         this.encodedPassword = encodedPassword;
         this.role = "NORMAL_USER";
-        this.bookUsers = new HashSet<>();
     }
 
     @Id
@@ -65,12 +66,21 @@ public class User {
         this.role = role;
     }
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    public Set<BookUser> getBookUsers() {
-        return bookUsers;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", orphanRemoval = true)
+    public Set<ReadAccess> getReadAccessSet() {
+        return readAccessSet;
     }
 
-    public void setBookUsers(Set<BookUser> bookUsers) {
-        this.bookUsers = bookUsers;
+    public void setReadAccessSet(Set<ReadAccess> readAccessSet) {
+        this.readAccessSet = readAccessSet;
+    }
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", orphanRemoval = true)
+    public Set<WriteAccess> getWriteAccessSet() {
+        return writeAccessSet;
+    }
+
+    public void setWriteAccessSet(Set<WriteAccess> writeAccessSet) {
+        this.writeAccessSet = writeAccessSet;
     }
 }

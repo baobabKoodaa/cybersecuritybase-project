@@ -2,33 +2,42 @@ package sec.project.domain;
 
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
-public class Category extends AbstractPersistable<Long> {
+public class Category {
 
-    private Category parentCategory;
+    private int id;
+    private Integer parentCategoryId;
     private String name;
 
     public Category() {
         super();
     }
 
-    public Category(Category parentCategory, String name) {
+    public Category(Integer parentCategoryId, String name) {
         this();
-        this.parentCategory = parentCategory;
+        this.parentCategoryId = parentCategoryId;
         this.name = name;
     }
 
-    public Category getParentCategory() {
-        return parentCategory;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public int getId() {
+        return id;
     }
 
-    public void setParentCategory(Category parentCategory) {
-        this.parentCategory = parentCategory;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Column(nullable = true)
+    public Integer getParentCategoryId() {
+        return parentCategoryId;
+    }
+
+    public void setParentCategoryId(Integer parentCategoryId) {
+        this.parentCategoryId = parentCategoryId;
     }
 
     public String getName() {

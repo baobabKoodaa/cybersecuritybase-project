@@ -11,15 +11,18 @@ public class Book {
 
     private int id;
     private String name;
-    private Set<BookUser> bookUsers;
+    private Set<ReadAccess> readAccessSet;
+    private Set<WriteAccess> writeAccessSet;
 
     public Book() {
         super();
+        this.readAccessSet = new HashSet<>();
+        this.writeAccessSet = new HashSet<>();
     }
 
     public Book(String name) {
+        this();
         this.name = name;
-        this.bookUsers = new HashSet<>();
     }
 
     @Id
@@ -41,12 +44,21 @@ public class Book {
         this.name = name;
     }
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
-    public Set<BookUser> getBookUsers() {
-        return bookUsers;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "book", orphanRemoval = true)
+    public Set<ReadAccess> getReadAccessSet() {
+        return readAccessSet;
     }
 
-    public void setBookUsers(Set<BookUser> bookUsers) {
-        this.bookUsers = bookUsers;
+    public void setReadAccessSet(Set<ReadAccess> readAccessSet) {
+        this.readAccessSet = readAccessSet;
+    }
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "book", orphanRemoval = true)
+    public Set<WriteAccess> getWriteAccessSet() {
+        return writeAccessSet;
+    }
+
+    public void setWriteAccessSet(Set<WriteAccess> writeAccessSet) {
+        this.writeAccessSet = writeAccessSet;
     }
 }

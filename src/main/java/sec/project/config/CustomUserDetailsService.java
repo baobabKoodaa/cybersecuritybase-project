@@ -15,11 +15,11 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import sec.project.domain.Book;
-import sec.project.domain.BookUser;
-import sec.project.domain.User;
+import sec.project.domain.*;
 import sec.project.repository.BookRepository;
+import sec.project.repository.ReadAccessRepository;
 import sec.project.repository.UserRepository;
+import sec.project.repository.WriteAccessRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -30,6 +30,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private ReadAccessRepository readAccessRepository;
+
+    @Autowired
+    private WriteAccessRepository writeAccessRepository;
+
     @PostConstruct
     public void init() {
         /** Hard coded credentials for convenience. Not intended as a flag-to-be-found. */
@@ -39,43 +45,61 @@ public class CustomUserDetailsService implements UserDetailsService {
         userRepository.save(mikko);
 
         Book bookA = new Book("A");
-        test(atte, bookA);
+        bookRepository.save(bookA);
+        testR(atte, bookA);
+        //test(atte, bookA);
         //test2(atte, bookA);
     }
 
-    @Transactional
-    private void test(User user, Book bookA) {
-        BookUser conjoined = new BookUser();
-        conjoined.setBook(bookA);
-        conjoined.setUser(user);
-        conjoined.setReadAccess(true);
-        conjoined.setWriteAccess(true);
-        bookA.getBookUsers().add(conjoined);
-        userRepository.save(user);
-        user.getBookUsers().add(conjoined);
-        bookRepository.save(bookA);
-
-        bookA = bookRepository.findOneByName("A");
-        System.out.println("should be 1: " + bookA.getBookUsers().size());
-        //user = userRepository.findOneByLoginname("atte");
-        System.out.println("should be 1: " + user.getBookUsers().size());
-    }
-
-    @Transactional
-    private void test2(User atte, Book bookA) {
-        BookUser conjoined = null;
-        for (BookUser bookUser : atte.getBookUsers()) {
-            conjoined = bookUser;
-            break;
+    //@Transactional
+    private void testR(User user, Book book) {
+        ReadAccess r = new ReadAccess(book, user);
+        readAccessRepository.save(r);
+        user = userRepository.findOneByLoginname(user.getLoginname());
+        System.out.println("ACCESS TO " + user.getReadAccessSet().size());
+        for (ReadAccess bah : user.getReadAccessSet()) {
+            r = bah;
         }
-        if (conjoined == null) {
-            System.out.println("DAFUCK");
+        readAccessRepository.delete(r);
+        System.out.println("SIZE " + readAccessRepository.findAll().size());
+        user = userRepository.findOneByLoginname(user.getLoginname());
+        System.out.println("ACCESS TO " + user.getReadAccessSet().size());
+
+        System.out.println(" ----------------- BOOK BELOW ----------------------");
+
+        r = new ReadAccess(book, user);
+        readAccessRepository.save(r);
+        book = bookRepository.findOneByName(book.getName());
+        System.out.println("ACCESS TO " + book.getReadAccessSet().size());
+        for (ReadAccess bah : user.getReadAccessSet()) {
+            r = bah;
         }
-        conjoined.setWriteAccess(false);
-        bookRepository.save(bookA);
-        userRepository.save(atte);
-        System.out.println("meh ");
-        // tallenna miten, minne?
+        readAccessRepository.delete(r);
+        System.out.println("SIZE " + readAccessRepository.findAll().size());
+        book = bookRepository.findOneByName(book.getName());
+        System.out.println("ACCESS TO " + book.getReadAccessSet().size());
+
+        System.out.println(" ----------------- MULTIPLE BELOW ----------------------");
+
+        Book bookB = new Book("B");
+        bookRepository.save(bookB);
+        ReadAccess r2 = new ReadAccess(bookB, user);
+        readAccessRepository.save(r2);
+        r = new ReadAccess(book, user);
+        readAccessRepository.save(r);
+        System.out.println("ACCESS TO " + user.getReadAccessSet().size());
+        user = userRepository.findOneByLoginname(user.getLoginname());
+        System.out.println("ACCESS TO " + user.getReadAccessSet().size());
+
+        System.out.println(" ----------------- WRITE BELOW ----------------------");
+
+        WriteAccess w = new WriteAccess(book, user);
+        writeAccessRepository.save(w);
+        user = userRepository.findOneByLoginname(user.getLoginname());
+        System.out.println("ACCESS TO " + user.getWriteAccessSet().size());
+        writeAccessRepository.delete(w);
+        user = userRepository.findOneByLoginname(user.getLoginname());
+        System.out.println("ACCESS TO " + user.getWriteAccessSet().size());
     }
 
     @Override
