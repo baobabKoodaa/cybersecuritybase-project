@@ -14,7 +14,7 @@ When you run it, the db is populated with some data and 2 users:
 
 ---
 
-**A5,A8**: CSRF protection is disabled in config\SecurityConfiguration.java line 23. This should have been the easiest to find and fix just by removing "csrf().disable()" from the code. Here is an article on how to test for CSRF vulnerabilities: https://www.owasp.org/index.php/Testing_for_CSRF_(OTG-SESS-005)
+**A5,A8**: CSRF protection is disabled in config\SecurityConfiguration.java line 23. This should have been the easiest to find and fix just by removing "csrf().disable()" from the code. [Here](https://www.owasp.org/index.php/Testing_for_CSRF_(OTG-SESS-005)) is an article on how to test for CSRF vulnerabilities.
 
 **A5,A2**: Authentication vulnerable to brute force attacks. The system accepts passwords as short as 1 character and doesn't throttle login attempts. This makes brute force attacks easy (using OWASP ZAP for example). [Here](http://stackoverflow.com/questions/2681401/spring-security-how-to-implement-brute-force-detection-bfd) is an article about how to protect against brute force attacks with Spring.
 
