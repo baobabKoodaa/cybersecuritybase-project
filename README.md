@@ -3,7 +3,7 @@ This is a vulnerable web application coded as a course project for [F-Secure's C
 
 **Warning:** if you run this, make sure port 8080 is **not** accessible from the internet.
 
-This project has 1 cool implementation flaw, which allows users to delete expenses from other users' books. See if you can find it? In total it has 3 distinct vulnerabilities that I'm aware of. At least 4 items on [OWASP top10 list](https://www.owasp.org/index.php/Top_10_2013-Top_10)are violated.
+This project has 1 cool implementation flaw, which allows users to delete expenses from other users' books. See if you can find it? In total it has 3 distinct vulnerabilities that I'm aware of. At least 4 items on [OWASP top10 list](https://www.owasp.org/index.php/Top_10_2013-Top_10) are violated.
 
 When you run it, the db is populated with some data and 2 users:
 
