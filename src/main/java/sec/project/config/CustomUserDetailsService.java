@@ -1,67 +1,49 @@
 package sec.project.config;
 
 import java.util.Arrays;
-import java.util.Map;
-import java.util.TreeMap;
 import javax.annotation.PostConstruct;
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import sec.project.domain.*;
-import sec.project.repository.*;
+import sec.project.logic.DAO;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private BookRepository bookRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ReadAccessRepository readAccessRepository;
-
-    @Autowired
-    private WriteAccessRepository writeAccessRepository;
-
-    @Autowired
-    private ExpenseRepository expenseRepository;
-
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private DAO dao;
 
     @PostConstruct
     public void init() {
         /** Populate database for testing convenience. */
-        User atte = new User("atte", encode("1"));
-        User mikko = new User("mikko", encode("masa"));
-        userRepository.save(atte);
-        userRepository.save(mikko);
-        setUpNewBook("Aten tilikirja", atte);
-        categoryRepository.save(new Category("Ruokamenot"));
-        categoryRepository.save(new Category("Mikrobitin kestotilaus"));
-    }
 
-    public Book setUpNewBook(String name, User user) {
-        Book book = new Book(name, user);
-        bookRepository.save(book);
-        readAccessRepository.save(new ReadAccess(book, user));
-        writeAccessRepository.save(new WriteAccess(book, user));
-        return book;
+        User atte = dao.createUser("atte", "1");
+        Book bookA = dao.createBook("Atte's expenses", atte);
+        dao.createExpense(2016, 10, bookA, "food", 1083, atte);
+        dao.createExpense(2016, 11, bookA, "food", 2045, atte);
+        dao.createExpense(2016, 12, bookA, "food", 830, atte);
+        dao.createExpense(2016, 12, bookA, "food", 666, atte);
+        dao.createExpense(2016, 12, bookA, "entertainment", 3000, atte);
+
+        User mikko = dao.createUser("mikko", "masa");
+        Book bookM = dao.createBook("Mikko's expenses", mikko);
+        dao.createExpense(2016, 10, bookM, "food", 23, mikko);
+        dao.createExpense(2016, 11, bookM, "food", 67, mikko);
+        dao.createExpense(2016, 12, bookM, "food", 55, mikko);
+        dao.createExpense(2016, 12, bookM, "food", 99, mikko);
+        dao.createExpense(2016, 12, bookM, "entertainment", 10, mikko);
+        dao.createExpense(2016, 12, bookM, "entertainment", 30, mikko);
+        dao.createExpense(2016, 12, bookM, "entertainment", 30, mikko);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findOneByLoginname(username);
+        User user = dao.findUserByLoginname(username);
         if (user == null) {
             throw new UsernameNotFoundException("No such user: " + username);
         }
@@ -73,10 +55,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                 true,
                 true,
                 Arrays.asList(new SimpleGrantedAuthority(user.getRole())));
-    }
-
-    private String encode(String plaintextPassword) {
-        return BCrypt.hashpw(plaintextPassword, BCrypt.gensalt());
     }
 
 }

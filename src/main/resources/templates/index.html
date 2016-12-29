@@ -16,18 +16,31 @@
         <form action="#" th:action="@{/postExpense}" method="POST">
             <p><label for="year">Year</label>: <input type="text" name="year" id="year"/></p>
             <p><label for="month">Month</label>: <input type="text" name="month" id="month"/></p>
-            <p><label for="lowestSubCategoryId">Category</label>: <input type="text" name="lowestSubCategoryId" id="lowestSubCategoryId" hidden="true" value="1"/></p>
+
+
+            <p>
+            <label for="category">Category</label>:
+            <input type='text' name="category" id="category" list='listid'>
+            <datalist id='listid'>
+                    <option th:each="category : *{categories}" th:value="${category.name}"></option>
+            </datalist>
+            </input>
+            </p>
+
+
             <p><label for="amountCents">AmountCents</label>: <input type="text" name="amountCents" id="amountCents"/></p>
             <input type="text" name="bookId" id="bookId" hidden="true" th:value="${book.id}"/>
             <input type="text" name="previousVersion" id="previousVersion" hidden="true"/>
             <p><input type="submit" value="Add expense" /></p>
         </form>
 
-        <h1>Selected book: <span th:text="${book.name}"></span></h1>
+        <h3>Accessing book: <span th:text="${book.name}"></span></h3>
 
         <ul>
             <li th:each="item : ${expenses}">
-                <span th:text="${item.amountCents}">expense</span> (<span th:text="${item.amountCents}">999</span>€)
+                <span th:text="${item.amountCents / 100}">6</span>.<span th:text="${item.amountCents % 100}">6</span>€
+                <span th:text="${item.lowestSubCategory.name}">food</span>
+                <span th:text="${item.month}">12</span>/<span th:text="${item.year}">2016</span>
                 <form th:action="@{/deleteExpense}" th:method="DELETE">
                     <input type="text" name="id" id="id" th:value="${item.id}" hidden="false"/>
                     <input type="submit" value="Delete"/>
