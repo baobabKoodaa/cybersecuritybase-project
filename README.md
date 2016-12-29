@@ -14,7 +14,7 @@ When you run it, the db is populated with some data and 2 users:
 
 ---
 
-**A5,A8**: CSRF protection is disabled in config\SecurityConfiguration.java line 23. This should have been the easiest to find and fix just by removing "csrf().disable()" from the code. Here is an article on how to test for CSRF vulnerabilities: https://www.owasp.org/index.php/Testing_for_CSRF_(OTG-SESS-005) This vulnerability violates:
+**A5,A8**: CSRF protection is disabled in config\SecurityConfiguration.java line 23. This should have been the easiest to find and fix just by removing "csrf().disable()" from the code. Here is an article on how to test for CSRF vulnerabilities: https://www.owasp.org/index.php/Testing_for_CSRF_(OTG-SESS-005)
 
 **A6**: Sensitive Data Exposure. All categories for expenses are shared across users. For example, if Tommy writes down "$800 for AIDS medication", other users will be able to see that some user has AIDS. Fixing this would require some work. Categories could be implemented as properties of a book. That way they do not leak to users who don't have read access to that book.
 
