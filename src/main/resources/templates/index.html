@@ -2,11 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
     <head>
-        <title>Expenses</title>
+        <title>Personal Expense Tracker</title>
     </head>
     <body>
 
-        <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+        <h1>Personal Expense Tracker</h1>
+
+        <span th:inline="text">Logged in as [[${#httpServletRequest.remoteUser}]]</span>
         <form th:action="@{/logout}" method="post">
             <input type="submit" value="Sign Out"/>
         </form>
@@ -18,7 +20,7 @@
             <p><label for="amountCents">AmountCents</label>: <input type="text" name="amountCents" id="amountCents"/></p>
             <input type="text" name="bookId" id="bookId" hidden="true" th:value="${book.id}"/>
             <input type="text" name="previousVersion" id="previousVersion" hidden="true"/>
-            <p><input type="submit" value="Submit" /></p>
+            <p><input type="submit" value="Add expense" /></p>
         </form>
 
         <h1>Selected book: <span th:text="${book.name}"></span></h1>

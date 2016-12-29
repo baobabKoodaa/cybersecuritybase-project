@@ -17,9 +17,8 @@ public class Category {
         super();
     }
 
-    public Category(Long parentCategoryId, String name) {
+    public Category(String name) {
         this();
-        this.parentCategoryId = parentCategoryId;
         this.name = name;
     }
 

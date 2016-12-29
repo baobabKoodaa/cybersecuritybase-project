@@ -12,7 +12,7 @@ import javax.transaction.Transactional;
 import java.security.Principal;
 
 @Controller
-public class RESTController {
+public class ReqController {
 
     @Autowired
     UserRepository userRepository;
@@ -37,9 +37,9 @@ public class RESTController {
         User user = userRepository.findOneByLoginname(auth.getName());
         Book latest = user.getLatestRead();
         if (latest == null) {
-            /** Assign any book as latest. */
-            for (WriteAccess w : user.getWriteAccessSet()) {
-                latest = w.getBook();
+            /** Assign any accessible book as latest. */
+            for (ReadAccess r : user.getReadAccessSet()) {
+                latest = r.getBook();
                 user.setLatestRead(latest);
                 userRepository.save(user);
                 break;
@@ -52,6 +52,7 @@ public class RESTController {
             userRepository.save(user);
         }
         model.addAttribute("book", latest);
+        model.addAttribute("categories", categoryRepository.findAll());
         model.addAttribute("expenses", expenseRepository.findFirst10ByBookAndCurrentOrderByTimeAddedDesc(latest, true));
         return "index";
     }
@@ -105,4 +106,8 @@ public class RESTController {
         return "redirect:/";
     }
 
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login";
+    }
 }

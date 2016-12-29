@@ -47,6 +47,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         userRepository.save(atte);
         userRepository.save(mikko);
         setUpNewBook("Aten tilikirja", atte);
+        categoryRepository.save(new Category("Ruokamenot"));
+        categoryRepository.save(new Category("Mikrobitin kestotilaus"));
     }
 
     public Book setUpNewBook(String name, User user) {
@@ -54,7 +56,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         bookRepository.save(book);
         readAccessRepository.save(new ReadAccess(book, user));
         writeAccessRepository.save(new WriteAccess(book, user));
-        categoryRepository.save(new Category());
         return book;
     }
 
